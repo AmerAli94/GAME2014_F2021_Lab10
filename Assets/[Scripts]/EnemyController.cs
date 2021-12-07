@@ -137,6 +137,7 @@ public class EnemyController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, lookAheadPoint.position);
+        Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, lookInFrontPoint.position);
     }
 }

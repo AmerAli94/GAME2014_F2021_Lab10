@@ -15,10 +15,10 @@ TagManager:
   - Platform
   - Wall
   - Player
-  - 
-  - 
-  - 
-  - 
+  - 'Background '
+  - Death Plane
+  - Marker
+  - Enemy
   - 
   - 
   - 
