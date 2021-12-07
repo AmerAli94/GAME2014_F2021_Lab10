@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Linq;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -23,8 +24,10 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Animation")] 
     public PlayerAnimationState state;
 
-    [Header("Sound FX")] 
+    [Header("Sound FX")]
+    public List<AudioSource> audioSources;
     public AudioSource jumpSound;
+    public AudioSource hitSound;
 
 
     [Header("Dust Trail")]
@@ -51,7 +54,11 @@ public class PlayerBehaviour : MonoBehaviour
 
         rigidbody = GetComponent<Rigidbody2D>();
         animatorController = GetComponent<Animator>();
-        jumpSound = GetComponent<AudioSource>();
+        audioSources = GetComponents<AudioSource>().ToList();
+
+        //assigned sounds
+        jumpSound = audioSources[0];
+        hitSound = audioSources[1];
 
         dustTrail = GetComponentInChildren<ParticleSystem>();
 
@@ -92,7 +99,6 @@ public class PlayerBehaviour : MonoBehaviour
             if (jump > 0)
             {
                 jumpSound.Play();
-                ShakeCamera();
             }
 
             // Check for Flip
@@ -155,6 +161,28 @@ public class PlayerBehaviour : MonoBehaviour
         return x;
     }
 
+    private void CreateDustTrail()
+    {
+        dustTrail.GetComponent<Renderer>().material.SetColor("_Color", dustTrailColor);
+        dustTrail.Play();
+    }
+
+    private void ShakeCamera()
+    {
+        perlin.m_AmplitudeGain = shakeIntensity;
+        isCameraShaking = true;
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.CompareTag("Bullet"))
+        {
+            ShakeCamera();
+            hitSound.Play();
+        }
+    }
+
     // EVENTS
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -174,18 +202,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private void CreateDustTrail()
-    {
-        dustTrail.GetComponent<Renderer>().material.SetColor("_Color", dustTrailColor);
-        dustTrail.Play();
-    }
-
-    private void ShakeCamera()
-    {
-        perlin.m_AmplitudeGain = shakeIntensity;
-        isCameraShaking = true;
-
-    }
+   
 
     // UTILITIES
 
